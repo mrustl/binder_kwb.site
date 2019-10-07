@@ -1,0 +1,97 @@
+---
+title: "Projects"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Projects}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(kwb.site)
+```
+
+
+# Tables
+
+```{r}
+# Get project infos from KWB website
+project_infos <- get_projects(debug = FALSE)
+jsonlite::write_json(project_infos, "projects.json")
+```
+
+We have in total `r nrow(project_infos)` project websites in German and English 
+on the KWB website.
+
+## English
+
+```{r}
+project_infos_en <- project_infos %>%
+  dplyr::filter(language == "en") 
+
+jsonlite::write_json(project_infos_en , "projects_en.json")
+
+DT::datatable(project_infos_en[,-3])
+
+```
+
+For `r nrow(project_infos_en)` projects the information is available in English.
+
+
+## German
+
+```{r}
+project_infos_de <- project_infos %>%
+  dplyr::filter(language == "de") 
+
+jsonlite::write_json(project_infos_de, "projects_de.json")
+
+DT::datatable(project_infos_de[,-3])
+
+```
+
+For `r nrow(project_infos_de)` projects the information is available in German.
+
+
+# Plots
+
+
+## English
+
+### By Department
+
+```{r fig.height=15, fig.width=9}
+plot_project_gant_chart(projects_json ="projects.json")
+
+```
+
+### By Topic
+
+```{r fig.height=15, fig.width=9}
+plot_project_gant_chart(projects_json = "projects.json", tag_selection = "topic")
+```
+
+## German
+
+### By Department
+
+```{r fig.height=15, fig.width=9}
+plot_project_gant_chart(projects_json ="projects.json",language_selection = "de")
+
+```
+
+### By Topic
+
+```{r eval = FALSE, fig.height=15, fig.width=9}
+plot_project_gant_chart(projects_json ="projects.json",
+                        tag_selection = "topic",
+                        language_selection = "de")
+
+``
